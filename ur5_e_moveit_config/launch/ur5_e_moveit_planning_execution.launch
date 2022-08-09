@@ -1,0 +1,58 @@
+<launch>
+  <arg name="tcp_ip" default="172.31.1.56"/> <!--Your IP address-->
+  <arg name="tcp_port" default="30003"/> <!--Port used for connection to Unity-->
+  <arg name="sim" default="false" />
+  <arg name="limited" default="false"/>
+  <arg name="debug" default="false" />
+
+  <!--Added by Isak-->
+  
+  <rosparam command="load" file="$(find ur5_e_moveit_config)/config/joint_names.yaml"/>
+
+  <include file="$(find ur5_e_moveit_config)/launch/planning_context.launch" >
+    <arg name="load_robot_description" value="true" />
+  </include>
+
+  <!--End of added by Isak -->
+
+
+  <include file="$(find ur_robot_driver)/launch/ur5_e_bringup.launch" >
+        <arg name="robot_ip" value="172.31.1.144" /> <!--The robot IP address-->
+  </include>
+
+
+  <!-- Remap follow_joint_trajectory -->
+  <remap if="$(arg sim)" from="/scaled_pos_joint_traj_controller/follow_joint_trajectory" to="/pos_joint_traj_controller/follow_joint_trajectory"/>
+  
+  <node name="server_endpoint" pkg="ros_tcp_endpoint" type="default_server_endpoint.py" args="--wait" output="screen" respawn="true">
+		<param name="tcp_ip" type="string" value="$(arg tcp_ip)"/>
+        <param name="tcp_port" type="int" value="$(arg tcp_port)"/>
+	</node>
+
+  <node name="mover" pkg="ur5_e_moveit_config" type="mover.py" args="--wait" output="screen"/>
+
+  <!-- Launch moveit -->
+  <include file="$(find ur5_e_moveit_config)/launch/move_group.launch">
+    <arg name="limited" default="$(arg limited)"/>
+    <arg name="debug" default="$(arg debug)" />
+  </include>
+</launch>
+
+<!--
+<launch>
+
+  <include file="$(find demo_moveit_config)/launch/planning_context.launch" >
+    <arg name="load_robot_description" value="true" />
+  </include>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="/use_gui" value="false"/>
+    <rosparam param="/source_list">[/joint_states]</rosparam>
+  </node>
+
+  <include file="$(find demo_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="config" value="true"/>
+  </include>
+
+</launch>
+-->
