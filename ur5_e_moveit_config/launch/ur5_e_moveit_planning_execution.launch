@@ -5,16 +5,11 @@
   <arg name="limited" default="false"/>
   <arg name="debug" default="false" />
 
-  <!--Added by Isak-->
-  
   <rosparam command="load" file="$(find ur5_e_moveit_config)/config/joint_names.yaml"/>
 
   <include file="$(find ur5_e_moveit_config)/launch/planning_context.launch" >
     <arg name="load_robot_description" value="true" />
   </include>
-
-  <!--End of added by Isak -->
-
 
   <include file="$(find ur_robot_driver)/launch/ur5_e_bringup.launch" >
         <arg name="robot_ip" value="172.31.1.144" /> <!--The robot IP address-->
@@ -37,22 +32,3 @@
     <arg name="debug" default="$(arg debug)" />
   </include>
 </launch>
-
-<!--
-<launch>
-
-  <include file="$(find demo_moveit_config)/launch/planning_context.launch" >
-    <arg name="load_robot_description" value="true" />
-  </include>
-
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="/use_gui" value="false"/>
-    <rosparam param="/source_list">[/joint_states]</rosparam>
-  </node>
-
-  <include file="$(find demo_moveit_config)/launch/moveit_rviz.launch">
-    <arg name="config" value="true"/>
-  </include>
-
-</launch>
--->
