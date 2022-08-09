@@ -121,7 +121,7 @@ def plan_pick_and_place(req):
     response.trajectories.append(pick_up_pose)
     response.trajectories.append(place_pose)
 
-    file_path = os.path.join(os.curdir, 'saved_trajectories', 'plan.yaml')
+    file_path = os.path.join(os.path.expanduser('~'), 'saved_trajectories', 'plan.yaml')
 
 
     if boolExecute:
